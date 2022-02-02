@@ -19,7 +19,7 @@ These are the following filters that have been designed:
 ---
 ## Some observations
 After realising the bandpass and bandstop filters for a given set of specifications
-in various forms, I was able to make the following conclusions –
+in various forms, I was able to make the following conclusions:
 - Realisation using an elliptic approximation gives the least order, i.e, it
 requires mininum resources. The order of resources required is as follows
 (for a given set of specifications):  
