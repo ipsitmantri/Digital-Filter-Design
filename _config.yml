@@ -1,6 +1,7 @@
 title: EE 338 - Digital Signal Processing
 description: My solution to the filter design assignment of this course
 logo: ./logo.png
+show_downloads: true
 
 remote_theme: pages-themes/minimal@v0.2.0
 plugins:
