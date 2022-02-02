@@ -1,0 +1,345 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>BP_IIR</title><meta name="generator" content="MATLAB 9.7"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-11-12"><meta name="DC.source" content="BP_IIR.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Poles of H_{analog}(s_L) H_{analog}(-s_L)</a></li><li><a href="#3">Finding poles of H_{analog}(s_L)</a></li><li><a href="#4">Magnitude and Phase response of H_{analog}(s_L)</a></li><li><a href="#5">Bandpass analog frequency transformation</a></li><li><a href="#7">bilinear transformation</a></li></ul></div><pre class="codeinput">clc; clear <span class="string">all</span>; close <span class="string">all</span>;
+tic;
+</pre><h2 id="2">Poles of H_{analog}(s_L) H_{analog}(-s_L)</h2><pre class="codeinput">N = 8;
+Omega_c = 1.0788;
+k = 1:2*N;
+poles = Omega_c .* exp(1i .* (pi/2) .* (1 + (2.*k + 1)./ N));
+figure();
+plot(poles, <span class="string">'.'</span>, <span class="string">'MarkerSize'</span>, 20);
+xlim([-1.5 1.5]);
+ylim([-1.5 1.5]);
+daspect([1 1 1]);
+hold <span class="string">on</span>;
+x = linspace(-pi, pi, 10000);
+a = Omega_c .* cos(x);
+b = Omega_c .* sin(x);
+plot(a,b);
+hold <span class="string">on</span>;
+plot(0,0,<span class="string">'r*'</span>);
+left_plane_poles = [];
+<span class="keyword">for</span> i=1:size(poles,2)
+    hold <span class="string">on</span>;
+    plot([0, real(poles(1,i))], [0, imag(poles(1,i))], <span class="string">'r-'</span>);
+    <span class="keyword">if</span> real(poles(1,i)) &lt; 0
+<span class="comment">%         disp(poles(1,i));</span>
+        left_plane_poles = [left_plane_poles, poles(1,i)];
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+plot([0, 0],[-1.5, 1.5], <span class="string">'k-'</span>);
+plot([-1.5, 1.5],[0, 0], <span class="string">'k-'</span>);
+title(<span class="string">'Poles of $H_{LPF}(s_L) \, H_{LPF}(-s_L)$ in the $s_L$ plane'</span>, <span class="string">'Interpreter'</span>, <span class="string">'latex'</span>);
+xlabel(<span class="string">'\Sigma_k'</span>);
+ylabel(<span class="string">'\Omega_k'</span>);
+</pre><img vspace="5" hspace="5" src="BP_IIR_01.png" alt=""> <h2 id="3">Finding poles of H_{analog}(s_L)</h2><pre class="codeinput">syms <span class="string">s</span> <span class="string">x</span>;
+f = 1;
+<span class="keyword">for</span> i=1:size(left_plane_poles,2)
+    f = f * (s - left_plane_poles(1,i));
+<span class="keyword">end</span>
+</pre><h2 id="4">Magnitude and Phase response of H_{analog}(s_L)</h2><pre class="codeinput">g = subs(f, s, 1i * x);
+figure();
+fplot(abs(1.8345/g));
+hold <span class="string">on</span>;
+fplot(s - s - 0.15 + 1, <span class="string">'k-'</span>, <span class="string">'Markersize'</span>, 10);
+hold <span class="string">on</span>;
+fplot(x-x+1, <span class="string">'k-'</span>, <span class="string">'Markersize'</span>, 10);
+hold <span class="string">on</span>;
+fplot(x - x + 0.15, <span class="string">'r-'</span>, <span class="string">'Markersize'</span>, 10);
+xline(1, <span class="string">'magenta-'</span>);
+hold <span class="string">on</span>;
+xline(1.3874,<span class="string">'magenta-'</span>);
+axis([0 2 0 1.2]);
+set(gca, <span class="string">'XTick'</span>, [0, 1, 1.3874], <span class="string">'xticklabel'</span>, {<span class="string">'0'</span>, <span class="string">'\Omega_{Lp} = 1'</span>,<span class="string">'\Omega_{Ls} = 1.3874'</span>});
+set(gca, <span class="string">'YTick'</span>, [0.15, 0.85, 1], <span class="string">'yticklabel'</span>, {<span class="string">'\delta_2 = 0.15'</span>, <span class="string">'1 - \delta_1 = 0.85'</span>, <span class="string">'1'</span>});
+daspect([1 1 1]);
+title(<span class="string">'Equivalent Butterworth Lowpass filter mangitude response'</span>);
+xlabel(<span class="string">'\Omega_L'</span>);
+ylabel(<span class="string">'|H(j \Omega_L)|'</span>);
+
+figure();
+fplot(angle(1.8345/g));
+xlabel(<span class="string">'\Omega_L'</span>);
+ylabel(<span class="string">'\angle H(j \Omega_L)'</span>);
+title(<span class="string">'Equivalent Butterworth Lowpass filter phase response'</span>);
+</pre><img vspace="5" hspace="5" src="BP_IIR_02.png" alt=""> <img vspace="5" hspace="5" src="BP_IIR_03.png" alt=""> <h2 id="5">Bandpass analog frequency transformation</h2><pre class="codeinput">syms <span class="string">s1</span>;
+Omega_0 = 0.7189;
+B = 0.2924;
+s1 = (s^2 + Omega_0^2) ./ (B * s);
+h = subs(f, s, s1);
+
+<span class="comment">%disp(1.8345/h); % transformed i.e., H_{analog}(s)</span>
+
+a = vpa(1.8345/h, 5); <span class="comment">% bandpass system function</span>
+</pre><pre class="codeinput">b = subs(a, s, 1i * x); <span class="comment">% to get the frequency response</span>
+figure();
+fplot(abs(b));
+set(gca, <span class="string">'XTick'</span>, [0.5375, 0.5875, 0.8799, 0.9498], <span class="string">'xticklabel'</span>, {<span class="string">'\Omega_{s1}'</span>, <span class="string">'\Omega_{p1}'</span>, <span class="string">'\Omega_{p2}'</span>, <span class="string">'\Omega_{s2}'</span>});
+set(gca, <span class="string">'YTick'</span>, [0.15, 0.85, 1], <span class="string">'yticklabel'</span>, {<span class="string">'\delta_2 = 0.15'</span>, <span class="string">'1 - \delta_1 = 0.85'</span>, <span class="string">'1'</span>});
+hold <span class="string">on</span>;
+xline(0.5375, <span class="string">'magenta-'</span>);hold <span class="string">on</span>;
+xline(0.5875, <span class="string">'magenta-'</span>);hold <span class="string">on</span>;
+xline(0.8799, <span class="string">'magenta-'</span>);hold <span class="string">on</span>;
+xline( 0.9498, <span class="string">'magenta-'</span>);
+hold <span class="string">on</span>;
+fplot(s - s - 0.15 + 1, <span class="string">'k-'</span>, <span class="string">'Markersize'</span>, 10);
+hold <span class="string">on</span>;
+fplot(x-x+1, <span class="string">'k-'</span>, <span class="string">'Markersize'</span>, 10);
+hold <span class="string">on</span>;
+fplot(x - x + 0.15, <span class="string">'r-'</span>, <span class="string">'Markersize'</span>, 10);
+daspect([1 1 1]);
+title(<span class="string">'Butterworth Bandpass filter mangitude response'</span>);
+xlabel(<span class="string">'\Omega'</span>);
+ylabel(<span class="string">'|H(j \Omega)|'</span>);
+axis([0 2 0 1.2]);
+
+figure();
+fplot(angle(b));
+daspect([1 1 1]);
+title(<span class="string">'Butterworth Bandpass filter phase response'</span>);
+xlabel(<span class="string">'\Omega'</span>);
+ylabel(<span class="string">'\angle H(j \Omega)'</span>);
+</pre><img vspace="5" hspace="5" src="BP_IIR_04.png" alt=""> <img vspace="5" hspace="5" src="BP_IIR_05.png" alt=""> <h2 id="7">bilinear transformation</h2><pre class="codeinput">syms <span class="string">w</span>;
+c = subs(a, s, (1-1/w) / (1+1/w));
+[Nz, Dz] = numden(1/c);
+Nz = sym2poly(Nz);
+Dz = sym2poly(Dz);
+<span class="comment">% disp('#######################################');</span>
+<span class="comment">% disp(Nz);</span>
+<span class="comment">% disp(Dz);</span>
+</pre><pre class="codeinput">[H,f] = freqz(Dz,Nz,1024*1024, 330e3);
+plot(f,abs(H));
+axis([0 100e3 0 1.3]);
+hold <span class="string">on</span>;
+yline(1.15, <span class="string">'red--'</span>, <span class="string">'LineWidth'</span>, 1.5);
+hold <span class="string">on</span>;
+yline(0.85, <span class="string">'red--'</span>, <span class="string">'LineWidth'</span>, 1.5);
+hold <span class="string">on</span>;
+yline(0.15, <span class="string">'red--'</span>, <span class="string">'LineWidth'</span>, 1.5);
+hold <span class="string">on</span>;
+xline(55.8e3, <span class="string">'magenta--'</span>, <span class="string">'LineWidth'</span>, 1.5);
+hold <span class="string">on</span>;
+xline(75.8e3, <span class="string">'magenta--'</span>, <span class="string">'LineWidth'</span>, 1.5);
+xlabel(<span class="string">'f in 10^4 Hz'</span>);
+ylabel(<span class="string">'|H(e^{j 2\pi f})|'</span>);
+title(<span class="string">'Magnitude Response of the Discrete Time Bandpass Filter'</span>);
+set(gca, <span class="string">'XTick'</span>, [51.8e3, 55.8e3, 75.8e3, 79.8e3], <span class="string">'xticklabel'</span>, {<span class="string">'f_{s1}'</span>, <span class="string">'f_{p1}'</span>, <span class="string">'f_{p2}'</span>, <span class="string">'f_{s2}'</span>});
+set(gca, <span class="string">'YTick'</span>, [0.15, 0.85, 1, 1.15], <span class="string">'yticklabel'</span>, {<span class="string">'\delta_2 = 0.15'</span>, <span class="string">'1 - \delta_1 = 0.85'</span>, <span class="string">'1'</span>, <span class="string">'1 + \delta_1 = 1.15'</span>});
+</pre><img vspace="5" hspace="5" src="BP_IIR_06.png" alt=""> <pre class="codeinput">figure();
+plot(f, angle(H));
+<span class="comment">% set(gca, 'XTick', [51.8e3, 55.8e3, 75.8e3, 79.8e3], 'xticklabel', {'f_{s1}', 'f_{p1}', 'f_{p2}', 'f_{s2}'});</span>
+xlim([1e4 120e3]);
+ylabel(<span class="string">'\angle H(e^{j 2\pi f})'</span>);
+xlabel(<span class="string">'f in Hz'</span>);
+title(<span class="string">'Phase Response of the Discrete Time Bandpass Filter'</span>);
+</pre><img vspace="5" hspace="5" src="BP_IIR_07.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clc; clear all; close all;
+tic;
+%% Poles of H_{analog}(s_L) H_{analog}(-s_L)
+N = 8;
+Omega_c = 1.0788;
+k = 1:2*N;
+poles = Omega_c .* exp(1i .* (pi/2) .* (1 + (2.*k + 1)./ N));
+figure();
+plot(poles, '.', 'MarkerSize', 20);
+xlim([-1.5 1.5]);
+ylim([-1.5 1.5]);
+daspect([1 1 1]);
+hold on;
+x = linspace(-pi, pi, 10000);
+a = Omega_c .* cos(x);
+b = Omega_c .* sin(x);
+plot(a,b);
+hold on;
+plot(0,0,'r*');
+left_plane_poles = [];
+for i=1:size(poles,2)
+    hold on;
+    plot([0, real(poles(1,i))], [0, imag(poles(1,i))], 'r-');
+    if real(poles(1,i)) < 0
+%         disp(poles(1,i));
+        left_plane_poles = [left_plane_poles, poles(1,i)];
+    end
+end
+plot([0, 0],[-1.5, 1.5], 'k-');
+plot([-1.5, 1.5],[0, 0], 'k-');
+title('Poles of $H_{LPF}(s_L) \, H_{LPF}(-s_L)$ in the $s_L$ plane', 'Interpreter', 'latex');
+xlabel('\Sigma_k');
+ylabel('\Omega_k');
+%% Finding poles of H_{analog}(s_L)
+syms s x;
+f = 1;
+for i=1:size(left_plane_poles,2)
+    f = f * (s - left_plane_poles(1,i));
+end
+%% Magnitude and Phase response of H_{analog}(s_L) 
+
+g = subs(f, s, 1i * x);
+figure();
+fplot(abs(1.8345/g));
+hold on;
+fplot(s - s - 0.15 + 1, 'k-', 'Markersize', 10);
+hold on;
+fplot(x-x+1, 'k-', 'Markersize', 10);
+hold on;
+fplot(x - x + 0.15, 'r-', 'Markersize', 10);
+xline(1, 'magenta-');
+hold on;
+xline(1.3874,'magenta-');
+axis([0 2 0 1.2]);
+set(gca, 'XTick', [0, 1, 1.3874], 'xticklabel', {'0', '\Omega_{Lp} = 1','\Omega_{Ls} = 1.3874'});
+set(gca, 'YTick', [0.15, 0.85, 1], 'yticklabel', {'\delta_2 = 0.15', '1 - \delta_1 = 0.85', '1'});
+daspect([1 1 1]);
+title('Equivalent Butterworth Lowpass filter mangitude response');
+xlabel('\Omega_L');
+ylabel('|H(j \Omega_L)|');
+
+figure();
+fplot(angle(1.8345/g));
+xlabel('\Omega_L');
+ylabel('\angle H(j \Omega_L)');
+title('Equivalent Butterworth Lowpass filter phase response');
+%% Bandpass analog frequency transformation
+syms s1;
+Omega_0 = 0.7189;
+B = 0.2924;
+s1 = (s^2 + Omega_0^2) ./ (B * s);
+h = subs(f, s, s1);
+
+%disp(1.8345/h); % transformed i.e., H_{analog}(s) 
+
+a = vpa(1.8345/h, 5); % bandpass system function
+%%
+b = subs(a, s, 1i * x); % to get the frequency response
+figure();
+fplot(abs(b));
+set(gca, 'XTick', [0.5375, 0.5875, 0.8799, 0.9498], 'xticklabel', {'\Omega_{s1}', '\Omega_{p1}', '\Omega_{p2}', '\Omega_{s2}'});
+set(gca, 'YTick', [0.15, 0.85, 1], 'yticklabel', {'\delta_2 = 0.15', '1 - \delta_1 = 0.85', '1'});
+hold on;
+xline(0.5375, 'magenta-');hold on;
+xline(0.5875, 'magenta-');hold on;
+xline(0.8799, 'magenta-');hold on;
+xline( 0.9498, 'magenta-');
+hold on;
+fplot(s - s - 0.15 + 1, 'k-', 'Markersize', 10);
+hold on;
+fplot(x-x+1, 'k-', 'Markersize', 10);
+hold on;
+fplot(x - x + 0.15, 'r-', 'Markersize', 10);
+daspect([1 1 1]);
+title('Butterworth Bandpass filter mangitude response');
+xlabel('\Omega');
+ylabel('|H(j \Omega)|');
+axis([0 2 0 1.2]);
+
+figure();
+fplot(angle(b));
+daspect([1 1 1]);
+title('Butterworth Bandpass filter phase response');
+xlabel('\Omega');
+ylabel('\angle H(j \Omega)');
+%% bilinear transformation
+syms w;
+c = subs(a, s, (1-1/w) / (1+1/w));
+[Nz, Dz] = numden(1/c);
+Nz = sym2poly(Nz);
+Dz = sym2poly(Dz);
+% disp('#######################################');
+% disp(Nz);
+% disp(Dz);
+%%
+[H,f] = freqz(Dz,Nz,1024*1024, 330e3);
+plot(f,abs(H));
+axis([0 100e3 0 1.3]);
+hold on;
+yline(1.15, 'redREPLACE_WITH_DASH_DASH', 'LineWidth', 1.5);
+hold on;
+yline(0.85, 'redREPLACE_WITH_DASH_DASH', 'LineWidth', 1.5);
+hold on;
+yline(0.15, 'redREPLACE_WITH_DASH_DASH', 'LineWidth', 1.5);
+hold on;
+xline(55.8e3, 'magentaREPLACE_WITH_DASH_DASH', 'LineWidth', 1.5);
+hold on;
+xline(75.8e3, 'magentaREPLACE_WITH_DASH_DASH', 'LineWidth', 1.5);
+xlabel('f in 10^4 Hz');
+ylabel('|H(e^{j 2\pi f})|');
+title('Magnitude Response of the Discrete Time Bandpass Filter');
+set(gca, 'XTick', [51.8e3, 55.8e3, 75.8e3, 79.8e3], 'xticklabel', {'f_{s1}', 'f_{p1}', 'f_{p2}', 'f_{s2}'});
+set(gca, 'YTick', [0.15, 0.85, 1, 1.15], 'yticklabel', {'\delta_2 = 0.15', '1 - \delta_1 = 0.85', '1', '1 + \delta_1 = 1.15'});
+%%
+figure();
+plot(f, angle(H));
+% set(gca, 'XTick', [51.8e3, 55.8e3, 75.8e3, 79.8e3], 'xticklabel', {'f_{s1}', 'f_{p1}', 'f_{p2}', 'f_{s2}'});
+xlim([1e4 120e3]);
+ylabel('\angle H(e^{j 2\pi f})');
+xlabel('f in Hz');
+title('Phase Response of the Discrete Time Bandpass Filter');
+##### SOURCE END #####
+--></body></html>
