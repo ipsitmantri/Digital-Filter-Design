@@ -1,5 +1,5 @@
-title: [The title of your site]
-description: [A short description of your site's purpose]
+title: EE 338 - Digital Signal Processing
+description: My solution to the filter design assignment of this course
 logo: ./logo.png
 
 remote_theme: pages-themes/minimal@v0.2.0
