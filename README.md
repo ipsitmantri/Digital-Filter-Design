@@ -1,6 +1,6 @@
 # Digital Filter Design
 My solution for the Filter Design Assignment of the course EE 338: Digital Signal Processing
-As a part of this assignment, I had to design 6 different filters based a set of specifications given. The detailed information is available in the [report](./180070032.pdf)
+As a part of this assignment, I had to design 6 different filters based a set of specifications given. The detailed information is available in the [report](./180070032.pdf){:target="_blank"}.  
 These are the following filters that have been designed:
 
 ---
